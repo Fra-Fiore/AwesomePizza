@@ -22,10 +22,12 @@ CREATE TABLE "order"
 (
     order_id  BIGSERIAL PRIMARY KEY,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    order_code VARCHAR(50) NOT NULL,
     status      VARCHAR(50)    NOT NULL,
     total_price NUMERIC(10, 2) NOT NULL
 );
 CREATE INDEX order_status_idx ON "order" (status);
+CREATE INDEX order_order_code_idx ON "order" (order_code);
 
 CREATE TABLE order_pizza
 (

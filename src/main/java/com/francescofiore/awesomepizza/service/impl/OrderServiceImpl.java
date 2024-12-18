@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 
 import static com.francescofiore.awesomepizza.util.order.OrderUtils.isValidStatusTransition;
@@ -37,9 +38,16 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new OrderNotFoundException(id));
     }
 
+    public String getOrderStatusByCode(String orderCode) {
+        return orderRepository.findByOrderCode(orderCode)
+                .map(o -> o.getStatus().name())
+                .orElseThrow(() -> new OrderNotFoundException(orderCode));
+    }
+
     public Order createOrder(Order order) {
         order.setStatus(OrderStatus.CREATED)
-                .setTotalPrice(calculateTotalPrice(order));
+                .setTotalPrice(calculateTotalPrice(order))
+                .setOrderCode("ORD-" + Instant.now().toEpochMilli());
         order.getPizzas().forEach(orderPizza -> orderPizza.setOrder(order));
         return orderRepository.save(order);
     }

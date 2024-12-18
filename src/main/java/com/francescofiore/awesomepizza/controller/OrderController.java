@@ -64,6 +64,16 @@ public class OrderController {
         return ResponseEntity.ok(orderMapper.toResponse(orderService.getOrderById(id)));
     }
 
+    @Operation(summary = "Visualizza lo stato di un ordine", description = "Restituisce lo stato di un ordine dato il suo codice")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Ordine trovato con successo"),
+            @ApiResponse(responseCode = "404", description = "Ordine non trovato")
+    })
+    @GetMapping("/{orderCode}/status")
+    public ResponseEntity<String> getOrderById(@PathVariable @NotNull String orderCode) {
+        return ResponseEntity.ok(orderService.getOrderStatusByCode(orderCode));
+    }
+
     @Operation(summary = "Crea un nuovo ordine", description = "Permette di creare un nuovo ordine")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Ordine creato con successo"),

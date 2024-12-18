@@ -15,6 +15,8 @@ public interface OrderService {
 
     Order getOrderById(Long id);
 
+    String getOrderStatusByCode(String orderCode);
+
     Order createOrder(Order order);
 
     Order updateOrder(Long id, Order updatedOrder);

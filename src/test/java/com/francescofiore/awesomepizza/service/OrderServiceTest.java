@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,6 +67,29 @@ class OrderServiceTest {
 
         assertThrows(OrderNotFoundException.class, () -> orderService.getOrderById(1L));
         verify(orderRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void getOrderStatusByCode_ExistingCode() {
+        var orderCode = "ORD-" + Instant.now().toEpochMilli();
+        Order order = new Order().setOrderId(1L).setOrderCode(orderCode).setStatus(OrderStatus.CREATED);
+
+        when(orderRepository.findByOrderCode(orderCode)).thenReturn(Optional.of(order));
+
+        String foundOrder = orderService.getOrderStatusByCode(orderCode);
+
+        assertNotNull(foundOrder);
+        assertEquals(OrderStatus.CREATED.name(), foundOrder);
+        verify(orderRepository, times(1)).findByOrderCode(orderCode);
+    }
+
+    @Test
+    void getOrderStatusByCode_NonExistingCode() {
+        var orderCode = "ORD-" + Instant.now().toEpochMilli();
+        when(orderRepository.findByOrderCode(orderCode)).thenReturn(Optional.empty());
+
+        assertThrows(OrderNotFoundException.class, () -> orderService.getOrderStatusByCode(orderCode));
+        verify(orderRepository, times(1)).findByOrderCode(orderCode);
     }
 
     @Test

@@ -27,6 +27,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @Column(name = "order_code")
+    private String orderCode;
+
     @Column(name = "total_price")
     private Double totalPrice;
 
@@ -46,7 +49,4 @@ public class Order {
         return Objects.hash(orderId);
     }
 
-    public String getOrderCode(){
-        return String.format("ORD%06d", orderId);
-    }
 }

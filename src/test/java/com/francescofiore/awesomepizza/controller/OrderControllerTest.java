@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.Instant;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -76,6 +77,31 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.status").value(OrderStatus.CREATED.toString()));
+    }
+
+    @Test
+    void testGetOrderStatusByCode() throws Exception {
+        var orderCode = "ORD-" + Instant.now().toEpochMilli();
+
+        Mockito.when(orderService.getOrderStatusByCode(orderCode)).thenReturn(OrderStatus.CREATED.name());
+
+        mockMvc.perform(get("/orders/{orderCode}/status", orderCode)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(OrderStatus.CREATED.name()));
+    }
+
+    @Test
+    void testGetOrderByCode_KO() throws Exception {
+        var orderCode = "ORD-" + Instant.now().toEpochMilli();
+
+        Mockito.when(orderService.getOrderStatusByCode(orderCode)).thenThrow(new OrderNotFoundException(orderCode));
+
+        mockMvc.perform(get("/orders/{orderCode}/status", orderCode)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message").value(String.format("Order with code %s not found", orderCode)));
     }
 
     @Test
