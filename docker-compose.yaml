@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: awesome_pizza_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./config/database/init:/docker-entrypoint-initdb.d
+      - postgres-data:/var/lib/postgresql/data
+#      - ./config/database/data:/var/lib/postgresql/data # For testing purpose only. Use Named Volume in production version
+    restart: always
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: awesome_pizza_app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USER: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres_db
+
+volumes:
+  postgres-data:

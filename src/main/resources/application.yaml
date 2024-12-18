@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: awesomepizza
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USER}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+server:
+  port: 8080
+logging:
+  level:
+    com.francescofiore: debug
+    org.springframework: debug
