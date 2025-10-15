@@ -14,20 +14,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/pizzas")
-@Tag(name = "Pizze", description = "API per la gestione del catalogo delle pizze")
+@Tag(name = "Pizzas", description = "API for managing the pizza catalog")
 public class PizzaController {
 
     private final PizzaService pizzaService;
     private final PizzaMapper pizzaMapper;
 
-    @Operation(summary = "Visualizza il catalogo delle pizze", description = "Restituisce l'elenco completo delle pizze con i relativi dettagli")
+    @Operation(summary = "Retrieve the pizza catalog", description = "Returns the full list of pizzas with their details")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista recuperata con successo")
+            @ApiResponse(responseCode = "200", description = "List fetched successfully")
     })
     @GetMapping
     public List<PizzaResponseDTO> getAllPizzas() {
@@ -36,40 +37,41 @@ public class PizzaController {
                 .toList();
     }
 
-    @Operation(summary = "Visualizza i dettagli di una pizza", description = "Restituisce i dettagli di una pizza dato il suo ID")
+    @Operation(summary = "Retrieve pizza details", description = "Returns the details of a pizza given its ID")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Pizza trovata con successo"),
-            @ApiResponse(responseCode = "404", description = "Pizza non trovata")
+            @ApiResponse(responseCode = "200", description = "Pizza found successfully"),
+            @ApiResponse(responseCode = "404", description = "Pizza not found")
     })
     @GetMapping("/{id}")
     public PizzaResponseDTO getPizzaById(@PathVariable @NotNull Long id) {
         return pizzaMapper.toResponse(pizzaService.getPizzaById(id));
     }
 
-    @Operation(summary = "Aggiungi una nuova pizza", description = "Crea una nuova pizza con i dettagli forniti")
+    @Operation(summary = "Create a new pizza", description = "Creates a new pizza using the provided details")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Pizza creata con successo"),
-            @ApiResponse(responseCode = "400", description = "Input non valido")
+            @ApiResponse(responseCode = "201", description = "Pizza created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @PostMapping
-    public PizzaResponseDTO createPizza(@Valid @RequestBody PizzaRequestDTO request) {
-        return pizzaMapper.toResponse(pizzaService.createPizza(pizzaMapper.toEntity(request)));
+    public ResponseEntity<PizzaResponseDTO> createPizza(@Valid @RequestBody PizzaRequestDTO request) {
+        PizzaResponseDTO response = pizzaMapper.toResponse(pizzaService.createPizza(pizzaMapper.toEntity(request)));
+        return ResponseEntity.created(URI.create("/pizzas/" + response.getId())).body(response);
     }
 
-    @Operation(summary = "Aggiorna una pizza esistente", description = "Aggiorna i dettagli di una pizza dato il suo ID")
+    @Operation(summary = "Update an existing pizza", description = "Updates the details of a pizza given its ID")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Pizza aggiornata con successo"),
-            @ApiResponse(responseCode = "404", description = "Pizza non trovata")
+            @ApiResponse(responseCode = "200", description = "Pizza updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Pizza not found")
     })
     @PutMapping("/{id}")
     public PizzaResponseDTO updatePizza(@PathVariable @NotNull Long id, @Valid @RequestBody PizzaRequestDTO request) {
         return pizzaMapper.toResponse(pizzaService.updatePizza(id, pizzaMapper.toEntity(request)));
     }
 
-    @Operation(summary = "Elimina una pizza", description = "Rimuove una pizza dato il suo ID")
+    @Operation(summary = "Delete a pizza", description = "Removes a pizza given its ID")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Pizza eliminata con successo"),
-            @ApiResponse(responseCode = "404", description = "Pizza non trovata")
+            @ApiResponse(responseCode = "204", description = "Pizza deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Pizza not found")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePizza(@PathVariable @NotNull Long id) {

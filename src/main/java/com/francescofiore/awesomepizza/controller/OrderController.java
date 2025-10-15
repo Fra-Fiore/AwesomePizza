@@ -19,20 +19,21 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/orders")
-@Tag(name = "Ordini", description = "API per la gestione degli ordini")
+@Tag(name = "Orders", description = "API for managing customer orders")
 public class OrderController {
 
     private final OrderService orderService;
     private final OrderMapper orderMapper;
 
-    @Operation(summary = "Visualizza la lista degli ordini", description = "Restituisce tutti gli ordini")
+    @Operation(summary = "List every order", description = "Returns every order stored in the system")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista recuperata con successo")
+            @ApiResponse(responseCode = "200", description = "List fetched successfully")
     })
     @GetMapping
     public List<OrderResponseDTO> getAllOrders() {
@@ -41,9 +42,9 @@ public class OrderController {
                 .toList();
     }
 
-    @Operation(summary = "Visualizza la lista degli ordini filtrati", description = "Restituisce tutti gli ordini filtrati")
+    @Operation(summary = "Search orders by status", description = "Returns the orders matching the provided status filters")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista recuperata con successo")
+            @ApiResponse(responseCode = "200", description = "List fetched successfully")
     })
     @GetMapping("/search")
     public ResponseEntity<Page<OrderResponseDTO>> filteredOrdersList(
@@ -54,63 +55,64 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @Operation(summary = "Visualizza i dettagli di un ordine", description = "Restituisce i dettagli di un ordine dato il suo ID")
+    @Operation(summary = "Retrieve order details", description = "Returns the details of an order by ID")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Ordine trovato con successo"),
-            @ApiResponse(responseCode = "404", description = "Ordine non trovato")
+            @ApiResponse(responseCode = "200", description = "Order found successfully"),
+            @ApiResponse(responseCode = "404", description = "Order not found")
     })
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponseDTO> getOrderById(@PathVariable @NotNull Long id) {
         return ResponseEntity.ok(orderMapper.toResponse(orderService.getOrderById(id)));
     }
 
-    @Operation(summary = "Visualizza lo stato di un ordine", description = "Restituisce lo stato di un ordine dato il suo codice")
+    @Operation(summary = "Check the status of an order", description = "Returns the status of an order by its public code")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Ordine trovato con successo"),
-            @ApiResponse(responseCode = "404", description = "Ordine non trovato")
+            @ApiResponse(responseCode = "200", description = "Order found successfully"),
+            @ApiResponse(responseCode = "404", description = "Order not found")
     })
     @GetMapping("/{orderCode}/status")
-    public ResponseEntity<String> getOrderById(@PathVariable @NotNull String orderCode) {
+    public ResponseEntity<String> getOrderStatusByCode(@PathVariable @NotNull String orderCode) {
         return ResponseEntity.ok(orderService.getOrderStatusByCode(orderCode));
     }
 
-    @Operation(summary = "Crea un nuovo ordine", description = "Permette di creare un nuovo ordine")
+    @Operation(summary = "Create a new order", description = "Persists a new order and returns its details")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Ordine creato con successo"),
-            @ApiResponse(responseCode = "400", description = "Input con sintassi non valida")
+            @ApiResponse(responseCode = "201", description = "Order created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid payload")
     })
     @PostMapping
     public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody OrderRequestDTO request) {
-        return ResponseEntity.ok(orderMapper.toResponse(orderService.createOrder(orderMapper.toEntity(request))));
+        OrderResponseDTO response = orderMapper.toResponse(orderService.createOrder(orderMapper.toEntity(request)));
+        return ResponseEntity.created(URI.create("/orders/" + response.getId())).body(response);
     }
 
-    @Operation(summary = "Prendi in carico un ordine", description = "Aggiorna lo stato di un ordine da 'CREATED' a 'IN_PREPARATION'")
+    @Operation(summary = "Start preparing an order", description = "Changes the status from 'CREATED' to 'IN_PREPARATION'")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Ordine aggiornato con successo"),
-            @ApiResponse(responseCode = "409", description = "Ordine non nello stato corretto"),
-            @ApiResponse(responseCode = "404", description = "Ordine non trovato")
+            @ApiResponse(responseCode = "200", description = "Order updated successfully"),
+            @ApiResponse(responseCode = "409", description = "Order is not in the expected state"),
+            @ApiResponse(responseCode = "404", description = "Order not found")
     })
     @PostMapping("/{id}/start-preparation")
     public ResponseEntity<OrderResponseDTO> startOrderPreparation(@PathVariable @NotNull Long id) {
         return ResponseEntity.ok(orderMapper.toResponse(orderService.startOrderPreparation(id)));
     }
 
-    @Operation(summary = "Segna un ordine come pronto", description = "Aggiorna lo stato di un ordine da 'IN_PREPARATION' a 'READY'")
+    @Operation(summary = "Mark an order as ready", description = "Changes the status from 'IN_PREPARATION' to 'READY'")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Ordine segnato come pronto con successo"),
-            @ApiResponse(responseCode = "409", description = "Ordine non nello stato corretto"),
-            @ApiResponse(responseCode = "404", description = "Ordine non trovato")
+            @ApiResponse(responseCode = "200", description = "Order marked as ready successfully"),
+            @ApiResponse(responseCode = "409", description = "Order is not in the expected state"),
+            @ApiResponse(responseCode = "404", description = "Order not found")
     })
     @PostMapping("/{id}/mark-ready")
     public ResponseEntity<OrderResponseDTO> markOrderAsReady(@PathVariable @NotNull Long id) {
         return ResponseEntity.ok(orderMapper.toResponse(orderService.updateOrderStatus(id, OrderStatus.READY)));
     }
 
-    @Operation(summary = "Segna un ordine come consegnato", description = "Aggiorna lo stato di un ordine da 'READY' a 'DELIVERED'")
+    @Operation(summary = "Mark an order as delivered", description = "Changes the status from 'READY' to 'DELIVERED'")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Ordine consegnato con successo"),
-            @ApiResponse(responseCode = "409", description = "Ordine non nello stato corretto"),
-            @ApiResponse(responseCode = "404", description = "Ordine non trovato")
+            @ApiResponse(responseCode = "200", description = "Order delivered successfully"),
+            @ApiResponse(responseCode = "409", description = "Order is not in the expected state"),
+            @ApiResponse(responseCode = "404", description = "Order not found")
     })
     @PostMapping("/{id}/mark-delivered")
     public ResponseEntity<OrderResponseDTO> markOrderAsDelivered(@PathVariable @NotNull Long id) {

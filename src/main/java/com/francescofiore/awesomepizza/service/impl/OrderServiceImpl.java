@@ -30,6 +30,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public Page<Order> getFilteredOrders(List<OrderStatus> status, Pageable pageable) {
+        if (status == null || status.isEmpty()) {
+            return orderRepository.findAll(pageable);
+        }
         return orderRepository.findByStatusIn(status, pageable);
     }
 

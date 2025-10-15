@@ -1,4 +1,4 @@
--- Creazione delle tabelle principali
+-- Create main tables
 CREATE TABLE pizza
 (
     pizza_id      BIGSERIAL PRIMARY KEY,

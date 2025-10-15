@@ -24,6 +24,7 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -133,7 +134,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$.status").value(409))
-                .andExpect(jsonPath("$.message").value("Order 1 cannot be update from state IN_PREPARATION to IN_PREPARATION"));
+                .andExpect(jsonPath("$.message").value("Order 1 cannot be updated from state IN_PREPARATION to IN_PREPARATION"));
     }
 
     @Test
@@ -209,7 +210,8 @@ class OrderControllerTest {
                                     }
                                   ]
                                 }"""))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/orders/" + orderResponse.getId()))
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.status").value("CREATED"))
                 .andExpect(jsonPath("$.pizzas[0].pizzaName").value("Margherita"))

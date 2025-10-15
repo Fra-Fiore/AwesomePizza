@@ -11,28 +11,28 @@ import java.util.List;
 
 
 @Data
-@Schema(description = "DTO per la creazione di un ordine")
+@Schema(description = "DTO used to create a new order")
 public class OrderRequestDTO {
 
     @NotEmpty(message = "Order must contain at least one pizza.")
-    @Schema(description = "Lista di pizze nell'ordine")
+    @Schema(description = "List of pizzas included in the order")
     private List<@Valid OrderPizzaDTO> pizzas;
 
     @Data
-    @Schema(description = "Dettagli di una pizza nell'ordine")
+    @Schema(description = "Details of a pizza contained in the order")
     public static class OrderPizzaDTO {
 
         @NotNull(message = "Pizza ID must not be null.")
         @Min(value = 1, message = "Pizza ID must be greater than or equal to 1.")
-        @Schema(description = "ID della pizza", example = "1")
+        @Schema(description = "Pizza identifier", example = "1")
         private Long pizzaId;
 
         @NotNull(message = "Quantity must not be null.")
         @Min(value = 1, message = "Quantity must be at least 1.")
-        @Schema(description = "ID della pizza", example = "1")
+        @Schema(description = "Quantity of the selected pizza", example = "1")
         private Integer quantity;
 
-        @Schema(description = "Note opzionali per la pizza", example = "Senza formaggio")
+        @Schema(description = "Optional notes for the kitchen", example = "No cheese")
         private String notes;
     }
 }

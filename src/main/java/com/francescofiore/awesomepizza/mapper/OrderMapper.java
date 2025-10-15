@@ -19,10 +19,10 @@ public class OrderMapper {
     private final PizzaRepository pizzaRepository;
 
     /**
-     * Converte un OrderRequest in un'entità Order.
+     * Converts an {@link OrderRequestDTO} into an {@link Order} entity.
      *
-     * @param request Il DTO di richiesta dell'ordine
-     * @return L'entità Order
+     * @param request the incoming order request payload
+     * @return the hydrated {@link Order} entity
      */
     public Order toEntity(OrderRequestDTO request) {
         Order order = new Order()
@@ -41,17 +41,17 @@ public class OrderMapper {
                                 .toList()
                 );
 
-        // Associa l'ordine a ciascun OrderPizza
+        // Associate the parent order with each OrderPizza item
         order.getPizzas().forEach(orderPizza -> orderPizza.setOrder(order));
 
         return order;
     }
 
     /**
-     * Converte un'entità Order in un OrderResponse.
+     * Converts an {@link Order} entity into an {@link OrderResponseDTO}.
      *
-     * @param order L'entità Order
-     * @return Il DTO di risposta dell'ordine
+     * @param order the order entity to convert
+     * @return the serialized order response DTO
      */
     public OrderResponseDTO toResponse(Order order) {
         return new OrderResponseDTO()

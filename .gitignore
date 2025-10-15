@@ -1,5 +1,15 @@
-# Project exclude paths
+# Maven build output
 /target/
-/.idea/
-/awesomepizza.iml
-/config/database/data/
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

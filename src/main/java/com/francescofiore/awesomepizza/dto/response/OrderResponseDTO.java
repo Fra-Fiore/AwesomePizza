@@ -8,38 +8,38 @@ import java.util.List;
 
 
 @Data
-@Schema(description = "DTO per la risposta di un ordine")
+@Schema(description = "DTO returned when reading order data")
 public class OrderResponseDTO {
 
-    @Schema(description = "ID tecnico dell'ordine", example = "123")
+    @Schema(description = "Internal order identifier", example = "123")
     private Long id;
 
-    @Schema(description = "Codice dell'ordine", example = "ORD000001")
+    @Schema(description = "Public order code", example = "ORD000001")
     private String orderCode;
 
-    @Schema(description = "Timestamp dell'ordine", example = "2024-12-14T10:00:00")
+    @Schema(description = "Order creation timestamp", example = "2024-12-14T10:00:00")
     private LocalDateTime timestamp;
 
-    @Schema(description = "Stato dell'ordine", example = "IN_PREPARATION")
+    @Schema(description = "Current order status", example = "IN_PREPARATION")
     private String status;
 
-    @Schema(description = "Somma totale da pagare", example = "15.00")
+    @Schema(description = "Total amount to pay", example = "15.00")
     private Double totalPrice;
 
-    @Schema(description = "Lista delle pizze nell'ordine")
+    @Schema(description = "List of pizzas included in the order")
     private List<OrderPizzaResponseDTO> pizzas;
 
     @Data
-    @Schema(description = "Dettagli di una pizza nella risposta di un ordine")
+    @Schema(description = "Pizza details included in the order response")
     public static class OrderPizzaResponseDTO {
 
-        @Schema(description = "Nome della pizza", example = "Margherita")
+        @Schema(description = "Pizza name", example = "Margherita")
         private String pizzaName;
 
-        @Schema(description = "Quantità ordinata", example = "2")
+        @Schema(description = "Ordered quantity", example = "2")
         private Integer quantity;
 
-        @Schema(description = "Note opzionali", example = "Senza formaggio")
+        @Schema(description = "Optional notes", example = "No cheese")
         private String notes;
     }
 }
