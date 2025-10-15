@@ -13,7 +13,7 @@ services:
     volumes:
       - ./config/database/init:/docker-entrypoint-initdb.d
       - postgres-data:/var/lib/postgresql/data
-#      - ./config/database/data:/var/lib/postgresql/data # For testing purpose only. Use Named Volume in production version
+#      - ./config/database/data:/var/lib/postgresql/data # For testing only. Use a named volume in production
     restart: always
   app:
     build:

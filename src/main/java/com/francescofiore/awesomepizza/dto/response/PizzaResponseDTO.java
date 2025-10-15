@@ -7,33 +7,33 @@ import java.util.List;
 
 
 @Data
-@Schema(description = "DTO per la risposta di una pizza")
+@Schema(description = "DTO returned when reading pizza data")
 public class PizzaResponseDTO {
 
-    @Schema(description = "ID della pizza", example = "1")
+    @Schema(description = "Pizza identifier", example = "1")
     private Long id;
 
-    @Schema(description = "Nome della pizza", example = "Margherita")
+    @Schema(description = "Pizza name", example = "Margherita")
     private String name;
 
-    @Schema(description = "Prezzo della pizza", example = "8.50")
+    @Schema(description = "Pizza price", example = "8.50")
     private Double price;
 
-    @Schema(description = "Descrizione della pizza", example = "Pomodoro e mozzarella")
+    @Schema(description = "Pizza description", example = "Tomato and mozzarella")
     private String description;
 
-    @Schema(description = "URL dell'immagine della pizza", example = "https://example.com/margherita.jpg")
+    @Schema(description = "Optional pizza image URL", example = "https://example.com/margherita.jpg")
     private String imageUrl;
 
-    @Schema(description = "Lista di nomi degli ingredienti associati", example = "[\"Pomodoro\", \"Mozzarella\"]")
+    @Schema(description = "List of ingredient names", example = "[\"Pomodoro\", \"Mozzarella\"]")
     private List<String> ingredients;
 
-    @Schema(description = "Indica se la pizza è vegana", example = "false")
+    @Schema(description = "Whether the pizza is vegan", example = "false")
     private Boolean veganOk;
 
-    @Schema(description = "Indica se la pizza è vegetariana", example = "true")
+    @Schema(description = "Whether the pizza is vegetarian", example = "true")
     private Boolean vegetarianOk;
 
-    @Schema(description = "Indica se la pizza è senza glutine", example = "false")
+    @Schema(description = "Whether the pizza is gluten-free", example = "false")
     private Boolean glutenFree;
 }

@@ -1,10 +1,10 @@
--- Inserimento di pizze
+-- Seed pizzas
 INSERT INTO pizza (name, price, description, image_url)
-VALUES ('Margherita', 8.50, 'Pizza classica con pomodoro e mozzarella', 'https://example.com/margherita.jpg'),
-       ('Diavola', 10.00, 'Pizza con salame piccante e mozzarella', 'https://example.com/diavola.jpg'),
-       ('Quattro Formaggi', 12.00, 'Pizza con mix di quattro formaggi', 'https://example.com/quattroformaggi.jpg');
+VALUES ('Margherita', 8.50, 'Classic pizza with tomato and mozzarella', 'https://example.com/margherita.jpg'),
+       ('Diavola', 10.00, 'Spicy salami and mozzarella', 'https://example.com/diavola.jpg'),
+       ('Quattro Formaggi', 12.00, 'Four-cheese blend', 'https://example.com/quattroformaggi.jpg');
 
--- Ingredienti base
+-- Core ingredients
 INSERT INTO ingredient (name, allergene)
 VALUES ('Pomodoro', FALSE),
        ('Mozzarella', TRUE),
@@ -13,13 +13,13 @@ VALUES ('Pomodoro', FALSE),
        ('Fontina', TRUE),
        ('Parmigiano', TRUE);
 
--- Farine
+-- Flours
 INSERT INTO ingredient (name, allergene)
 VALUES ('Farina di Grano', TRUE),
        ('Farina Integrale', TRUE),
        ('Farina di Riso', FALSE);
 
--- Opzioni vegane e gluten-free
+-- Vegan and gluten-free options
 INSERT INTO ingredient (name, allergene)
 VALUES ('Mozzarella di Riso', FALSE),
        ('Seitan', FALSE),
@@ -30,7 +30,7 @@ VALUES ('Mozzarella di Riso', FALSE),
        ('Olio EVO', FALSE);
 
 
--- Relazioni pizza-ingredienti
+-- Pizza-to-ingredient relationships
 INSERT INTO pizza_ingredient (pizza_id, ingredient_id)
 VALUES (1, 1),  -- Margherita: Pomodoro
        (1, 2),  -- Margherita: Mozzarella
